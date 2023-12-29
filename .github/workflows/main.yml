@@ -18,6 +18,6 @@ jobs:
           server-id: github
           settings-path: ${{ github.workspace }}
       - name: Publish puglin to GitHub Maven Repository
-        run: mvn -DskipTests deploy -s $GITHUB_WORKSPACE/settings.xml
+        run: mvn -DskipTests deploy -s -s $GITHUB_WORKSPACE/src/main/res/.m2/settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
