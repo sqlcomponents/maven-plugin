@@ -1,6 +1,5 @@
 package org.sqlcomponents;
 
-import lombok.SneakyThrows;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -70,13 +69,18 @@ public final class SQLComponentsMojo extends AbstractMojo {
     /**
      * Method to execute the plugin.
      */
-    @SneakyThrows
     public void execute() {
-        Application lApplication = createApplicationFromYMLSpec();
-        lApplication.getOrm()
-                .setApplicationClassLoader(getClassLoader(this.project));
-        lApplication.compile(
-                new JavaCompiler()); // todo: why compiler has to be passed,
+        Application lApplication = null;
+        try {
+            lApplication = createApplicationFromYMLSpec();
+            lApplication.getOrm()
+                    .setApplicationClassLoader(getClassLoader(this.project));
+            lApplication.compile(
+                    new JavaCompiler()); // todo: why compiler has to be passed,
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         // why not created within
         // compile method, is Compiler Injectable?
     }
