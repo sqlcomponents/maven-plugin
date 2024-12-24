@@ -19,9 +19,9 @@ import java.util.List;
 /**
  * The type Sql components mojo.
  */
-@Mojo(name = SQLComponentsMojo.GENERATED_SOURCES, defaultPhase =
-        LifecyclePhase.GENERATE_SOURCES, requiresDependencyResolution =
-        ResolutionScope.RUNTIME)
+@Mojo(name = "generate",
+        defaultPhase = LifecyclePhase.GENERATE_SOURCES,
+        requiresDependencyResolution = ResolutionScope.RUNTIME)
 public final class SQLComponentsMojo extends AbstractMojo {
     /**
      * The Generated sources.
@@ -73,6 +73,12 @@ public final class SQLComponentsMojo extends AbstractMojo {
         Application lApplication = null;
         try {
             lApplication = createApplicationFromYMLSpec();
+            if(lApplication.getRootPackage() == null
+            || lApplication.getRootPackage().trim().isEmpty() ) {
+                lApplication.setRootPackage(this.project.getGroupId() + "."
+                        + this.project.getArtifactId());
+            }
+
             lApplication.getOrm()
                     .setApplicationClassLoader(getClassLoader(this.project));
             lApplication.compile(
@@ -93,7 +99,7 @@ public final class SQLComponentsMojo extends AbstractMojo {
      */
     private ClassLoader getClassLoader(final MavenProject paramProject) {
         try {
-            List classpathElements = paramProject.getCompileClasspathElements();
+            List<Object> classpathElements = paramProject.getCompileClasspathElements();
             classpathElements.add(paramProject.getBuild().getOutputDirectory());
             classpathElements.add(
                     paramProject.getBuild().getTestOutputDirectory());
@@ -121,7 +127,7 @@ public final class SQLComponentsMojo extends AbstractMojo {
         lApplication.setSrcFolder(
                 project.getBuild().getDirectory() + GENERATE_SOURCES_DIR
                         + lApplication.getName().toLowerCase());
-        getLog().info("'" + GENERATED_SOURCES + "' directory is: "
+        getLog().info("'SQL Components' are created at: "
                 + lApplication.getSrcFolder());
         project.addCompileSourceRoot(lApplication.getSrcFolder());
         return lApplication;
